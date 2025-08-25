@@ -78,7 +78,7 @@ export async function startPortForward(
     targetPort: number;
     namespace?: string;
   }
-): Promise<{ content: { success: boolean; message: string }[] }> {
+): Promise<{ content: { type: string; text: string }[] }> {
   let command = `kubectl port-forward`;
   if (input.namespace) {
     command += ` -n ${input.namespace}`;
@@ -108,7 +108,20 @@ export async function startPortForward(
       ports: [{ local: input.localPort, remote: input.targetPort }],
     });
     return {
-      content: [{ success: result.success, message: result.message }],
+      content: [
+        {
+          type: "text",
+          text: JSON.stringify({
+            success: result.success,
+            message: result.message,
+            portForwardId: `${input.resourceType}-${input.resourceName}-${input.localPort}`,
+            localPort: input.localPort,
+            targetPort: input.targetPort,
+            resource: `${input.resourceType}/${input.resourceName}`,
+            namespace: input.namespace || "default"
+          }, null, 2),
+        },
+      ],
     };
   } catch (error: any) {
     throw new Error(`Failed to execute port-forward: ${error.message}`);
@@ -132,7 +145,7 @@ export async function stopPortForward(
   input: {
     id: string;
   }
-): Promise<{ content: { success: boolean; message: string }[] }> {
+): Promise<{ content: { type: string; text: string }[] }> {
   const portForward = k8sManager.getPortForward(input.id);
   if (!portForward) {
     throw new Error(`Port-forward with id ${input.id} not found`);
@@ -143,7 +156,14 @@ export async function stopPortForward(
     k8sManager.removePortForward(input.id);
     return {
       content: [
-        { success: true, message: "port-forward stopped successfully" },
+        {
+          type: "text", 
+          text: JSON.stringify({
+            success: true,
+            message: "port-forward stopped successfully",
+            portForwardId: input.id
+          }, null, 2),
+        },
       ],
     };
   } catch (error: any) {

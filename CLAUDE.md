@@ -14,9 +14,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ### Testing and Quality
 
 - `bun run test` - Execute the complete test suite with custom sequencer (kubectl tests run last)
+- `vitest run <pattern>` - Run specific tests matching a pattern (e.g., `vitest run kubectl` for kubectl-related tests)
 - Tests have 120s timeout and 60s hook timeout due to Kubernetes operations
 - Use `npx @modelcontextprotocol/inspector node dist/index.js` for local testing with Inspector
-- Always run single test based on with area you are working on. running all tests will take a long time.
+- Always run single test based on area you are working on. Running all tests will take a long time due to Kubernetes cluster interactions.
 
 ### Local Development Testing
 
@@ -57,6 +58,14 @@ This is an MCP (Model Context Protocol) server that provides Kubernetes cluster 
 5. Responses formatted and returned through transport
 
 ## Development Guidelines
+
+### Prerequisites
+
+- Node.js >= 18 (as specified in package.json engines)
+- kubectl installed and accessible in PATH
+- Valid kubeconfig with configured contexts
+- Active Kubernetes cluster connection (minikube, Rancher Desktop, GKE, etc.)
+- Helm v3 for chart operations (optional)
 
 ### Adding New Tools
 
