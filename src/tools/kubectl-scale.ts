@@ -71,8 +71,8 @@ export async function kubectlScale(
       return {
         content: [
           {
-            success: true,
-            message: `Scaled ${resourceType} ${input.name} to ${input.replicas} replicas`,
+            type: "text",
+            text: `Scaled ${resourceType} ${input.name} to ${input.replicas} replicas`,
           },
         ],
       };
@@ -87,8 +87,8 @@ export async function kubectlScale(
       return {
         content: [
           {
-            success: false,
-            message: error.message,
+            type: "text",
+            text: `Error: ${error.message}`,
           },
         ],
       };
@@ -97,8 +97,8 @@ export async function kubectlScale(
     return {
       content: [
         {
-          success: false,
-          message: `Failed to scale resource: ${error.message}`,
+          type: "text",
+          text: `Failed to scale resource: ${error.message}`,
         },
       ],
     };
